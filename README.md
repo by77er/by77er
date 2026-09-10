@@ -3,7 +3,7 @@ Hi, I'm Bit.
 I specialize in high performance systems programming, networking, and distributed infrastructure. I'm working on traffic infrastructure at Discord.
 
 Some of my hobby projects:
-- Pretraining a dense 1B LLM in nvfp8/mixed locally on my RTX 5080 & RL'd with GRPO + RLVR for basic tasks
+- Pretraining a dense 1B LLM in fp8/mixed locally on my RTX 5080 & RL'd with GRPO + RLVR for basic tasks
 - AI agent [sandboxing](https://github.com/by77er/iso) and [harness](https://github.com/by77er/bitty) design
 - Experiments with pure functional programming (Lean) for robust agent-managed [infrastructure](https://github.com/by77er/inframe)
 - [Emulators](https://github.com/by77er/lc3-emu) and programming language [interpreters](https://github.com/by77er/bfinterp)
