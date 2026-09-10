@@ -18,6 +18,7 @@ I'm currently studying:
 - Pure mathematics
 - Cooking
 
+Puzzle:
 ```
       f0  VM
       RgEAAAAA
