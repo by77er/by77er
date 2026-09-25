@@ -1,4 +1,4 @@
-Hi, I'm Bit.
+Hi!
 
 I specialize in high performance systems programming, networking, and distributed infrastructure. I'm working on traffic infrastructure at Discord.
 
