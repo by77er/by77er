@@ -3,6 +3,7 @@ Hi!
 I specialize in high performance systems programming, networking, and distributed infrastructure. I'm working on traffic infrastructure at Discord.
 
 Some of my hobby projects:
+- Building [async RL infra](https://github.com/by77er/distributed_agents_environments) to distribute training, inference, and environment compute across heterogeneous providers
 - Pretraining a dense 1B LLM in fp8/mixed locally on my RTX 5080 & RL'd with GRPO + RLVR for basic tasks
 - AI agent [sandboxing](https://github.com/by77er/iso) and [harness](https://github.com/by77er/bitty) design
 - Experiments with pure functional programming (Lean) for robust agent-managed [infrastructure](https://github.com/by77er/inframe)
@@ -15,7 +16,7 @@ I used to have a homelab, but it had an unfortunate encounter with water (RIP).
 
 I'm currently studying:
 - LLM pretraining, inference, RL, and evaluation - particularly through an infra lens
-- Pure mathematics
+- Pure math
 - Cooking
 
 Puzzle:
