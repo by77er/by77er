@@ -1,0 +1,314 @@
+{
+  "summary": {
+    "mel_roformer": {
+      "vocals_sdr_median": 11.783492053480327,
+      "inst_sdr_median": 15.714860257890127,
+      "cpu_seconds_per_audio_second": 1.197939494521649
+    },
+    "bs_roformer": {
+      "vocals_sdr_median": 12.184979877125087,
+      "inst_sdr_median": 16.37281720925786,
+      "cpu_seconds_per_audio_second": 8.843686713987982
+    },
+    "mdx_inst_hq3": {
+      "vocals_sdr_median": 7.262842007726293,
+      "inst_sdr_median": 12.007414248869257,
+      "cpu_seconds_per_audio_second": 0.9774481811333778
+    },
+    "htdemucs_ft": {
+      "vocals_sdr_median": 9.508276941076716,
+      "inst_sdr_median": 12.660752055184918,
+      "cpu_seconds_per_audio_second": 4.441314165939398
+    }
+  },
+  "per_track": {
+    "mel_roformer": [
+      {
+        "track": "AM Contra - Heart Peripheral",
+        "vocals_sdr": 13.253340130596596,
+        "inst_sdr": 16.234350442854154,
+        "seconds": 8.899129713999969,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Al James - Schoolboy Facination",
+        "vocals_sdr": 11.22298056305285,
+        "inst_sdr": 12.104804916007987,
+        "seconds": 8.42858950099992,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Angels In Amplifiers - I'm Alright",
+        "vocals_sdr": 14.209983257823515,
+        "inst_sdr": 15.861745986026834,
+        "seconds": 8.105402794999918,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Arise - Run Run Run",
+        "vocals_sdr": 14.329839777542146,
+        "inst_sdr": 22.277504826152544,
+        "seconds": 8.119943340999953,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Bulldozer",
+        "vocals_sdr": 8.195243258950912,
+        "inst_sdr": 13.506510769742972,
+        "seconds": 8.005119498999989,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Too Much",
+        "vocals_sdr": 14.07351064459046,
+        "inst_sdr": 16.878014954470963,
+        "seconds": 8.24409084399997,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Ben Carrigan - We'll Talk About It All Tonight",
+        "vocals_sdr": 9.07411684813794,
+        "inst_sdr": 15.567974529753421,
+        "seconds": 7.7805526790000386,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Bobby Nobody - Stitch Up",
+        "vocals_sdr": 12.344003543907805,
+        "inst_sdr": 17.708048657415272,
+        "seconds": 7.8814968130000125,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Buitraker - Revo X",
+        "vocals_sdr": 7.271860177473895,
+        "inst_sdr": 15.203913328670167,
+        "seconds": 8.263875631000019,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Carlos Gonzalez - A Place For Us",
+        "vocals_sdr": 9.111121199866506,
+        "inst_sdr": 9.097854979529217,
+        "seconds": 7.772974335000072,
+        "audio_seconds": 6.8034467120181406
+      }
+    ],
+    "bs_roformer": [
+      {
+        "track": "AM Contra - Heart Peripheral",
+        "vocals_sdr": 13.482026236375788,
+        "inst_sdr": 16.435557692063014,
+        "seconds": 58.762595736000094,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Al James - Schoolboy Facination",
+        "vocals_sdr": 11.51687049638036,
+        "inst_sdr": 12.399888667694206,
+        "seconds": 60.14040327500004,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Angels In Amplifiers - I'm Alright",
+        "vocals_sdr": 14.969946667737268,
+        "inst_sdr": 16.538688594396724,
+        "seconds": 60.590236895999965,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Arise - Run Run Run",
+        "vocals_sdr": 15.467395898816083,
+        "inst_sdr": 23.276737434646492,
+        "seconds": 59.77352637599995,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Bulldozer",
+        "vocals_sdr": 8.533165497518652,
+        "inst_sdr": 13.750618614137508,
+        "seconds": 63.26629325299996,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Too Much",
+        "vocals_sdr": 14.547736206105455,
+        "inst_sdr": 17.292385033482592,
+        "seconds": 61.655488927999954,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Ben Carrigan - We'll Talk About It All Tonight",
+        "vocals_sdr": 9.852097466475838,
+        "inst_sdr": 16.310076726452703,
+        "seconds": 63.13836934900007,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Bobby Nobody - Stitch Up",
+        "vocals_sdr": 12.853089257869817,
+        "inst_sdr": 18.216936427099313,
+        "seconds": 58.614133203000165,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Buitraker - Revo X",
+        "vocals_sdr": 8.23605766454978,
+        "inst_sdr": 15.997183204674945,
+        "seconds": 59.188274383000135,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Carlos Gonzalez - A Place For Us",
+        "vocals_sdr": 9.399277442961676,
+        "inst_sdr": 9.38826861356237,
+        "seconds": 56.54619156500007,
+        "audio_seconds": 6.8034467120181406
+      }
+    ],
+    "mdx_inst_hq3": [
+      {
+        "track": "AM Contra - Heart Peripheral",
+        "vocals_sdr": 8.865733503973537,
+        "inst_sdr": 11.876351336627405,
+        "seconds": 10.338046512999881,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Al James - Schoolboy Facination",
+        "vocals_sdr": 7.416144948707836,
+        "inst_sdr": 8.220083663353698,
+        "seconds": 6.445727039999838,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Angels In Amplifiers - I'm Alright",
+        "vocals_sdr": 11.70416245089056,
+        "inst_sdr": 13.178148874534049,
+        "seconds": 5.931761279000057,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Arise - Run Run Run",
+        "vocals_sdr": 5.727812509401828,
+        "inst_sdr": 13.442043658099173,
+        "seconds": 5.978727616000015,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Bulldozer",
+        "vocals_sdr": 7.513798551096248,
+        "inst_sdr": 12.60234650437296,
+        "seconds": 6.065950173999909,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Too Much",
+        "vocals_sdr": 5.1394064077784325,
+        "inst_sdr": 8.173797960385976,
+        "seconds": 6.5846633129999645,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Ben Carrigan - We'll Talk About It All Tonight",
+        "vocals_sdr": 3.356094598353094,
+        "inst_sdr": 9.719540966005672,
+        "seconds": 6.538247926999929,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Bobby Nobody - Stitch Up",
+        "vocals_sdr": 7.10953906674475,
+        "inst_sdr": 12.138477161111108,
+        "seconds": 6.158310128000039,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Buitraker - Revo X",
+        "vocals_sdr": 6.524117728286844,
+        "inst_sdr": 13.526839437000067,
+        "seconds": 5.985547780000161,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Carlos Gonzalez - A Place For Us",
+        "vocals_sdr": 8.474340094959656,
+        "inst_sdr": 8.397055424720596,
+        "seconds": 6.473184371000116,
+        "audio_seconds": 6.8034467120181406
+      }
+    ],
+    "htdemucs_ft": [
+      {
+        "track": "AM Contra - Heart Peripheral",
+        "vocals_sdr": 11.152907079074843,
+        "inst_sdr": 12.898138629931957,
+        "seconds": 29.994915151000214,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Al James - Schoolboy Facination",
+        "vocals_sdr": 9.48852377497129,
+        "inst_sdr": 10.397469690636463,
+        "seconds": 29.906958482999926,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Angels In Amplifiers - I'm Alright",
+        "vocals_sdr": 11.700652333071064,
+        "inst_sdr": 13.004129972017054,
+        "seconds": 29.710236114000054,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Arise - Run Run Run",
+        "vocals_sdr": 9.923655799500526,
+        "inst_sdr": 15.108805141814054,
+        "seconds": 29.738097478999862,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Bulldozer",
+        "vocals_sdr": 6.208210706110298,
+        "inst_sdr": 12.132700956381935,
+        "seconds": 32.47218677700016,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "BKS - Too Much",
+        "vocals_sdr": 11.670019053904861,
+        "inst_sdr": 14.343186124751329,
+        "seconds": 30.70113739699991,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Ben Carrigan - We'll Talk About It All Tonight",
+        "vocals_sdr": 6.021451785400323,
+        "inst_sdr": 12.398934860444138,
+        "seconds": 29.53040305400009,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Bobby Nobody - Stitch Up",
+        "vocals_sdr": 9.528030107182143,
+        "inst_sdr": 13.827690197276642,
+        "seconds": 28.75728361399979,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Buitraker - Revo X",
+        "vocals_sdr": 4.738345535766041,
+        "inst_sdr": 12.42336548043788,
+        "seconds": 30.3747552169998,
+        "audio_seconds": 6.8034467120181406
+      },
+      {
+        "track": "Carlos Gonzalez - A Place For Us",
+        "vocals_sdr": 7.3206677285460255,
+        "inst_sdr": 6.546518560721102,
+        "seconds": 30.976469307000116,
+        "audio_seconds": 6.8034467120181406
+      }
+    ]
+  }
+}

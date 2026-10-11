@@ -67,7 +67,7 @@ def main():
     mix_dir = out / "mixtures"
     mix_dir.mkdir(parents=True, exist_ok=True)
 
-    db = musdb.DB(root=args.musdb_root, subsets="test")
+    db = musdb.DB(root=args.musdb_root, subsets="test", download=not Path(args.musdb_root, "test").exists())
     tracks = db.tracks[: args.tracks]
     refs = {}
     for t in tracks:
