@@ -1,0 +1,6 @@
+# Install CPU PyTorch first (pick the CUDA index instead on a GPU machine):
+#   pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+audio-separator[cpu]
+audioread  # imported by audio-separator but not declared as a dependency
+musdb
+soundfile
