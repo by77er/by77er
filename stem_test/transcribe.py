@@ -8,9 +8,18 @@ Writes {"language": ..., "lines": [{"start", "end", "text", "words": [{"w", "s",
 
 import argparse
 import json
+import subprocess
 import time
 
+import numpy as np
 from faster_whisper import WhisperModel
+
+
+def load_16k_mono(path):
+    # Decode with ffmpeg rather than faster-whisper's PyAV path, which breaks across PyAV releases.
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-ac", "1", "-ar", "16000", "-f", "f32le", "-"],
+                         check=True, capture_output=True).stdout
+    return np.frombuffer(raw, dtype=np.float32)
 
 
 def main():
@@ -27,7 +36,7 @@ def main():
                          download_root=args.cache_dir)
     start = time.perf_counter()
     segments, info = model.transcribe(
-        args.audio,
+        load_16k_mono(args.audio),
         language=args.language,
         initial_prompt=args.prompt,
         beam_size=5,
