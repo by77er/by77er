@@ -24,6 +24,9 @@ BS-RoFormer and about 7x faster on CPU. Choose BS-RoFormer when quality matters
 more than time.
 
 Caveats:
+- The speed column comes from 7-second clips. A full 4:45 song through BS-RoFormer
+  took 1 h 51 min on the same CPU, about 23 s per audio second, so expect full songs
+  to run slower than the table suggests.
 - 10 clips of 7 seconds each is a small sample.
 - Some of these models may have seen MUSDB18 during training, so absolute scores
   may be optimistic. The ranking is the useful part.
