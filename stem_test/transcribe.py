@@ -30,6 +30,8 @@ def main():
     ap.add_argument("--language", default=None)
     ap.add_argument("--prompt", default=None, help="optional context, e.g. song title and artist")
     ap.add_argument("--cache-dir", default=None)
+    ap.add_argument("--no-vad", action="store_true",
+                    help="skip voice-activity filtering; catches more sung words but can invent text in silence")
     args = ap.parse_args()
 
     model = WhisperModel(args.model, device="cpu", compute_type="int8", cpu_threads=4,
@@ -41,7 +43,7 @@ def main():
         initial_prompt=args.prompt,
         beam_size=5,
         word_timestamps=True,
-        vad_filter=True,
+        vad_filter=not args.no_vad,
         vad_parameters={"min_silence_duration_ms": 700},
         # Sung lyrics repeat a lot; carrying text forward makes Whisper loop or invent lines.
         condition_on_previous_text=False,
