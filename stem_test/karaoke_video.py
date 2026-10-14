@@ -15,12 +15,14 @@ import tempfile
 from pathlib import Path
 import json
 
-import numpy as np
-from PIL import Image
+from PIL import Image, ImageFont
 
 W, H = 1920, 1080
-LEAD_ROWS = (600, 730)       # baseline y of the two alternating lead rows
-BACKING_Y = 880
+LEAD_ROWS = (560, 725)       # baseline y of the two alternating lead rows
+BACKING_Y = 905
+LEAD_SIZE, BACKING_SIZE = 112, 80
+MAX_TEXT_W = W - 2 * 100     # lines wider than this are narrowed to fit
+BG = "#101318"
 PRE_ROLL = 4.0               # how early a lead line can appear before it is sung
 COUNTDOWN_GAP = 6.0          # show a countdown before a line that follows a gap this long
 
@@ -57,7 +59,25 @@ def shift(lyrics, offset):
     return out
 
 
-def build_ass(lyrics, title, artist, duration, intro=0.0, credits=()):
+def fit_tag(text, font, size):
+    """\\fscx tag that narrows a line just enough to fit MAX_TEXT_W, or "" if it already fits."""
+    if font is None:
+        return ""
+    width = ImageFont.truetype(font, size).getlength(text)
+    return f"\\fscx{int(100 * MAX_TEXT_W / width)}" if width > MAX_TEXT_W else ""
+
+
+def find_font(fonts_dir, family, style):
+    for f in sorted(Path(fonts_dir).glob("*.[ot]tf")):
+        name = ImageFont.truetype(str(f), 10).getname()
+        if name[0] == family and style in name[1]:
+            return str(f)
+    return None
+
+
+def build_ass(lyrics, title, artist, duration, intro=0.0, credits=(), fonts_dir="."):
+    lead_font = find_font(fonts_dir, "Bricolage Grotesque", "ExtraBold")
+    back_font = find_font(fonts_dir, "Bricolage Grotesque", "Medium")
     lead, back = lyrics["lead"], lyrics["backing"]
     head = f"""[Script Info]
 ScriptType: v4.00+
@@ -68,10 +88,10 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Lead,Bricolage Grotesque ExtraBold,84,{ass_color('#ec6fa6')},{ass_color('#5b6474')},{ass_color('#0b0d11')},{ass_color('#000000', 0x80)},0,0,0,0,100,100,0,0,1,3,0,2,110,110,0,1
-Style: Backing,Bricolage Grotesque Medium,58,{ass_color('#4fbdd1')},{ass_color('#3a4a55')},{ass_color('#0b0d11')},{ass_color('#000000', 0x80)},0,1,0,0,100,100,0,0,1,2.5,0,2,110,110,0,1
-Style: Label,IBM Plex Mono Medium,26,{ass_color('#9aa3b0')},{ass_color('#9aa3b0')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,2,0,1,0,0,7,0,0,0,1
-Style: Count,Bricolage Grotesque ExtraBold,64,{ass_color('#ec6fa6')},{ass_color('#2a303a')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,24,0,1,0,0,2,0,0,0,1
+Style: Lead,Bricolage Grotesque ExtraBold,{LEAD_SIZE},{ass_color('#ec6fa6')},{ass_color('#5b6474')},{ass_color('#0b0d11')},{ass_color('#000000', 0x80)},0,0,0,0,100,100,0,0,1,3.5,0,2,100,100,0,1
+Style: Backing,Bricolage Grotesque Medium,{BACKING_SIZE},{ass_color('#4fbdd1')},{ass_color('#3a4a55')},{ass_color('#0b0d11')},{ass_color('#000000', 0x80)},0,1,0,0,100,100,0,0,1,3,0,2,100,100,0,1
+Style: Label,IBM Plex Mono Medium,30,{ass_color('#9aa3b0')},{ass_color('#9aa3b0')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,2,0,1,0,0,7,0,0,0,1
+Style: Count,Bricolage Grotesque ExtraBold,80,{ass_color('#ec6fa6')},{ass_color('#2a303a')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,24,0,1,0,0,2,0,0,0,1
 Style: Title,Bricolage Grotesque ExtraBold,120,{ass_color('#e8ebf0')},{ass_color('#e8ebf0')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,0,0,1,0,0,5,0,0,0,1
 Style: Kicker,IBM Plex Mono Medium,30,{ass_color('#ec6fa6')},{ass_color('#ec6fa6')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,6,0,1,0,0,5,0,0,0,1
 Style: Credit,IBM Plex Mono Medium,26,{ass_color('#7c8594')},{ass_color('#7c8594')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,1,0,1,0,0,5,0,0,0,1
@@ -109,13 +129,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         nxt = lead[i + 1]["start"] if i + 1 < len(lead) else duration
         vanish = min(l["end"] + 0.5, max(nxt, l["end"] + 0.1))
         y = LEAD_ROWS[i % 2]
-        add(appear, vanish, "Lead", f"{{\\pos({W // 2},{y})\\fad(150,200)}}" + karaoke_text(l["words"], appear))
+        fit = fit_tag(" ".join(w["w"] for w in l["words"]), lead_font, LEAD_SIZE)
+        add(appear, vanish, "Lead", f"{{\\pos({W // 2},{y})\\fad(150,200){fit}}}" + karaoke_text(l["words"], appear))
 
         gap = l["start"] - (lead[i - 1]["end"] if i else 0.0)
         if gap >= COUNTDOWN_GAP and l["start"] >= 3:
             # three dots that fill one per second before the entry
             c0 = l["start"] - 3
-            add(c0, l["start"], "Count", f"{{\\pos({W // 2},{y - 110})\\fad(200,0)}}{{\\kf100}}●{{\\kf100}}●{{\\kf100}}●")
+            add(c0, l["start"], "Count", f"{{\\pos({W // 2},{y - 140})\\fad(200,0)}}{{\\kf100}}●{{\\kf100}}●{{\\kf100}}●")
 
     # instrumental breaks get a quiet marker
     for a, b in zip(lead, lead[1:]):
@@ -127,20 +148,15 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         appear = max(l["start"] - 1.5, prev_end)
         nxt = back[i + 1]["start"] - 1.5 if i + 1 < len(back) else duration
         vanish = max(min(l["end"] + 0.5, nxt), l["end"] + 0.05)
-        add(appear, vanish, "Backing", f"{{\\pos({W // 2},{BACKING_Y})\\fad(150,200)}}" + karaoke_text(l["words"], appear))
+        fit = fit_tag(" ".join(w["w"] for w in l["words"]), back_font, BACKING_SIZE)
+        add(appear, vanish, "Backing", f"{{\\pos({W // 2},{BACKING_Y})\\fad(150,200){fit}}}" + karaoke_text(l["words"], appear))
 
     return head + "\n".join(ev) + "\n"
 
 
 def background(path):
-    """Dark field with a soft glow behind the lyric rows."""
-    y, x = np.mgrid[0:H, 0:W].astype(np.float32)
-    base = np.array([16, 19, 24], np.float32)
-    glow = np.exp(-(((x - W / 2) / (W * 0.45)) ** 2 + ((y - 690) / (H * 0.32)) ** 2))
-    tint = np.array([60, 30, 50], np.float32)
-    img = base + glow[..., None] * tint * 0.35
-    img += np.random.default_rng(0).normal(0, 1.2, img.shape)  # a little grain to stop banding
-    Image.fromarray(np.clip(img, 0, 255).astype(np.uint8)).save(path)
+    """Flat solid field."""
+    Image.new("RGB", (W, H), BG).save(path)
 
 
 def main():
@@ -166,7 +182,7 @@ def main():
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         background(tmp / "bg.png")
-        (tmp / "lyrics.ass").write_text(build_ass(lyrics, args.title, args.artist, duration, args.intro, args.credit), encoding="utf-8")
+        (tmp / "lyrics.ass").write_text(build_ass(lyrics, args.title, args.artist, duration, args.intro, args.credit, args.fonts_dir), encoding="utf-8")
 
         inputs = ["-loop", "1", "-framerate", str(args.fps), "-i", str(tmp / "bg.png")]
         for a in args.audio:
