@@ -47,7 +47,17 @@ def karaoke_text(words, appear):
     return "".join(parts)
 
 
-def build_ass(lyrics, title, artist, duration):
+def shift(lyrics, offset):
+    """Move every line and word later by offset seconds."""
+    out = {}
+    for part, lines in lyrics.items():
+        out[part] = [{**l, "start": l["start"] + offset, "end": l["end"] + offset,
+                      "words": [{**w, "s": w["s"] + offset, "e": w["e"] + offset} for w in l["words"]]}
+                     for l in lines]
+    return out
+
+
+def build_ass(lyrics, title, artist, duration, intro=0.0, credits=()):
     lead, back = lyrics["lead"], lyrics["backing"]
     head = f"""[Script Info]
 ScriptType: v4.00+
@@ -63,6 +73,8 @@ Style: Backing,Bricolage Grotesque Medium,58,{ass_color('#4fbdd1')},{ass_color('
 Style: Label,IBM Plex Mono Medium,26,{ass_color('#9aa3b0')},{ass_color('#9aa3b0')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,2,0,1,0,0,7,0,0,0,1
 Style: Count,Bricolage Grotesque ExtraBold,64,{ass_color('#ec6fa6')},{ass_color('#2a303a')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,24,0,1,0,0,2,0,0,0,1
 Style: Title,Bricolage Grotesque ExtraBold,120,{ass_color('#e8ebf0')},{ass_color('#e8ebf0')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,0,0,1,0,0,5,0,0,0,1
+Style: Kicker,IBM Plex Mono Medium,30,{ass_color('#ec6fa6')},{ass_color('#ec6fa6')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,6,0,1,0,0,5,0,0,0,1
+Style: Credit,IBM Plex Mono Medium,26,{ass_color('#7c8594')},{ass_color('#7c8594')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,1,0,1,0,0,5,0,0,0,1
 Style: Artist,Bricolage Grotesque Medium,56,{ass_color('#9aa3b0')},{ass_color('#9aa3b0')},{ass_color('#000000', 0xFF)},{ass_color('#000000', 0xFF)},0,0,0,0,100,100,0,0,1,0,0,5,0,0,0,1
 
 [Events]
@@ -71,16 +83,24 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     ev = []
     add = lambda start, end, style, text: ev.append(f"Dialogue: 0,{ts(start)},{ts(end)},{style},,0,0,0,,{text}")
 
-    # header labels for the whole song
-    add(0, duration, "Label", f"{{\\pos(110,70)}}{title.upper()}  ·  {artist.upper()}")
-    add(0, duration, "Label", f"{{\\an9\\pos({W - 110},70)}}{{\\c{ass_color('#ec6fa6')}}}●{{\\c{ass_color('#9aa3b0')}}} LEAD   "
+    # header labels once the song is under way
+    add(intro, duration, "Label", f"{{\\pos(110,70)}}{title.upper()}  ·  {artist.upper()}")
+    add(intro, duration, "Label", f"{{\\an9\\pos({W - 110},70)}}{{\\c{ass_color('#ec6fa6')}}}●{{\\c{ass_color('#9aa3b0')}}} LEAD   "
                               f"{{\\c{ass_color('#4fbdd1')}}}●{{\\c{ass_color('#9aa3b0')}}} BACKING")
 
-    # title card until the first line can appear
+    # title card, cleared before the first line appears so the two never overlap
     first = min([l["start"] for l in lead + back] or [duration])
-    if first > 3:
-        add(0, first - PRE_ROLL + 0.5, "Title", f"{{\\pos({W // 2},{H // 2 - 40})\\fad(400,400)}}{title}")
-        add(0, first - PRE_ROLL + 0.5, "Artist", f"{{\\pos({W // 2},{H // 2 + 60})\\fad(400,400)}}{artist}")
+    card_end = first - PRE_ROLL - 0.2
+    if card_end > 2:
+        cx, cy = W // 2, H // 2 - 60
+        add(0.3, card_end, "Kicker", f"{{\\pos({cx},{cy - 150})\\fad(500,400)}}KARAOKE")
+        add(0.6, card_end, "Title", f"{{\\pos({cx},{cy - 40})\\fad(700,400)\\fscx104\\fscy104\\t(0,1200,\\fscx100\\fscy100)}}{title}")
+        add(1.1, card_end, "Artist", f"{{\\pos({cx},{cy + 70})\\fad(600,400)}}{artist}")
+        legend = (f"{{\\c{ass_color('#ec6fa6')}}}●{{\\c{ass_color('#9aa3b0')}}}  LEAD  your part      "
+                  f"{{\\c{ass_color('#4fbdd1')}}}●{{\\c{ass_color('#9aa3b0')}}}  BACKING  sung on the track")
+        add(2.0, card_end, "Label", f"{{\\an5\\pos({cx},{cy + 190})\\fad(500,400)}}{legend}")
+        for i, line in enumerate(credits):
+            add(2.6 + 0.25 * i, card_end, "Credit", f"{{\\pos({cx},{H - 200 + 40 * i})\\fad(500,400)}}{line}")
 
     # lead: alternate rows; a line appears when the previous one starts, so the next line is always visible
     for i, l in enumerate(lead):
@@ -132,26 +152,31 @@ def main():
     ap.add_argument("--fonts-dir", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--fps", type=int, default=30)
+    ap.add_argument("--intro", type=float, default=0.0, help="seconds of title card before the song starts")
+    ap.add_argument("--credit", action="append", default=[], help="a line of small print for the title card")
     args = ap.parse_args()
 
     lyrics = json.loads(Path(args.lyrics).read_text())
     probe = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0",
                             args.audio[0]], capture_output=True, text=True, check=True)
-    duration = float(probe.stdout)
+    song = float(probe.stdout)
+    duration = song + args.intro
+    lyrics = shift(lyrics, args.intro)
 
     with tempfile.TemporaryDirectory() as tmp:
         tmp = Path(tmp)
         background(tmp / "bg.png")
-        (tmp / "lyrics.ass").write_text(build_ass(lyrics, args.title, args.artist, duration), encoding="utf-8")
+        (tmp / "lyrics.ass").write_text(build_ass(lyrics, args.title, args.artist, duration, args.intro, args.credit), encoding="utf-8")
 
         inputs = ["-loop", "1", "-framerate", str(args.fps), "-i", str(tmp / "bg.png")]
         for a in args.audio:
             inputs += ["-i", a]
         n = len(args.audio)
-        mix = "".join(f"[{i + 1}:a]" for i in range(n)) + (f"amix=inputs={n}:normalize=0,alimiter=limit=0.97[a]" if n > 1 else "anull[a]")
+        mix = "".join(f"[{i + 1}:a]" for i in range(n)) + (f"amix=inputs={n}:normalize=0,alimiter=limit=0.97," if n > 1 else "") \
+            + f"adelay={int(args.intro * 1000)}:all=1[a]"
         bar = (f"color=c=0xec6fa6:s={W}x6:r={args.fps}[bar];"
                f"[0:v]ass={tmp / 'lyrics.ass'}:fontsdir={args.fonts_dir}[txt];"
-               f"[txt][bar]overlay=x='-W+W*t/{duration:.3f}':y={H - 6}:shortest=1[v]")
+               f"[txt][bar]overlay=x='-W+W*max(0,t-{args.intro:.3f})/{song:.3f}':y={H - 6}:shortest=1[v]")
         cmd = ["ffmpeg", "-y", "-loglevel", "error", "-stats", *inputs,
                "-filter_complex", f"{mix};{bar}", "-map", "[v]", "-map", "[a]",
                "-t", f"{duration:.3f}", "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-tune", "animation",
