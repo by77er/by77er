@@ -5,3 +5,4 @@ audioread  # imported by audio-separator but not declared as a dependency
 musdb
 soundfile
 faster-whisper  # transcribe.py
+pillow  # karaoke_video.py
