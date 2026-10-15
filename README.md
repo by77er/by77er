@@ -19,7 +19,7 @@ I'm currently studying:
 - Pure math
 - Cooking
 
-Puzzle:
+Puzzle(meow!):
 ```
       f0  VM
       RgEAAAAA
